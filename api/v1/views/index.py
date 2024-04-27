@@ -10,29 +10,24 @@ from models.place import Place
 from models.review import Review
 from models.amenity import Amenity
 
+classes = {"users": "User", "places": "Place", "states": "State",
+           "cities": "City", "amenities": "Amenity",
+           "reviews": "Review"}
 
-@app_views.route('/status')
+
+@app_views.route('/status', methods=['GET'])
 def api_status():
     """ Status of the API """
     response = {'status': 'OK'}
     return jsonify(response)
 
 
-@app_views.route('/stats', methods=['GET'], strict_slashes=False)
-def number_objects():
+@app_views.route('/stats', methods=['GET'])
+def api_stats():
     """ Retrieves the number of each object by type """
     if request.method == 'GET':
         num_objs = {}
-        NAMES = {
-            "Amenity": "amenities",
-            "City": "cities",
-            "Places": "places",
-            "Reviews": "reviews",
-            "States": "states",
-            "Users": "users"
-        }
+        for i in classes:
+            num_objs[i] = storage.count(classes[i])
 
-    for i, value in NAMES.items():
-        num_objs[value] = storage.count(i)
-
-    return jsonify(num_objs)
+        return jsonify(num_objs)
