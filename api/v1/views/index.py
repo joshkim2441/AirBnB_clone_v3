@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Creating the flask app, app_views"""
 from api.v1.views import app_views
-from flask import jsonify
+from flask import jsonify, request
 from models import storage
 from models.user import User
 from models.city import City
@@ -21,16 +21,18 @@ def api_status():
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def number_objects():
     """ Retrieves the number of each object by type """
-    classes = [Amenity, City, Place, Review, State, User]
-    names = ["amenities",
-             "cities",
-             "places",
-             "reviews",
-             "states",
-             "users"]
+    if request.method == 'GET':
+        num_objs = {}
+        NAMES = {
+            "Amenity": "amenities",
+            "City": "cities",
+            "Places": "places",
+            "Reviews": "reviews",
+            "States": "states",
+            "Users": "users"
+        }
 
-    num_objs = {}
-    for i in range(len(classes)):
-        num_objs[names[i]] = storage.count(classes[i])
+    for i, value in NAMES.items():
+        num_objs[value] = storage.count(i)
 
     return jsonify(num_objs)
