@@ -14,8 +14,10 @@ def states_no_id():
     """
     if request.method == 'GET':
         all_states = storage.all('State')
-        all_states = list(obj.to_json() for obj in all_states.values())
-        return jsonify(all_states)
+        list_states = []
+        for state in all_states.values():
+            list_states.append(state.to_dict())
+        return jsonify(list_states)
 
     if request.method == 'POST':
         req_json = request.get_json()
@@ -35,9 +37,10 @@ def states_with_id(state_id=None):
     """
         states route to handle http method for requested state by id
     """
-    state_obj = storage.get('State', state_id)
+    state_obj = storage.get('State', 'state_id')
     if state_obj is None:
         abort(404, 'Not found')
+        return jsonify(state_obj.to_dict()), 'OK'
 
     if request.method == 'GET':
         return jsonify(state_obj.to_json())
