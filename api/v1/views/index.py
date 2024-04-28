@@ -27,7 +27,7 @@ def api_stats():
     """ Retrieves the number of each object by type """
     if request.method == 'GET':
         num_objs = {}
-        for i in classes:
-            num_objs[i] = storage.count(classes[i])
+        for cls in classes:
+            num_objs[cls] = storage.count(classes[cls])
 
         return jsonify(num_objs)
