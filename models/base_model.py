@@ -4,6 +4,7 @@ Contains class BaseModel
 """
 
 from datetime import datetime
+import os
 import models
 from os import getenv
 import sqlalchemy
@@ -12,8 +13,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import uuid
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
-
-if models.storage_t == "db":
+STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
+if STORAGE_TYPE == "db":
     Base = declarative_base()
 else:
     Base = object
@@ -21,7 +22,7 @@ else:
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
-    if models.storage_t == "db":
+    if STORAGE_TYPE == "db":
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)
         updated_at = Column(DateTime, default=datetime.utcnow)

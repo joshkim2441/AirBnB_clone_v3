@@ -13,13 +13,28 @@ from models.review import Review
 from models.state import State
 from models.user import User
 
-classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {
+    "Amenity": Amenity,
+    "BaseModel": BaseModel,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
 
 
 class FileStorage:
     """serializes instances to a JSON file & deserializes back to instances"""
-
+    CNC = {
+        "Amenity": Amenity,
+        "BaseModel": BaseModel,
+        "City": City,
+        "Place": Place,
+        "Review": Review,
+        "State": State,
+        "User": User
+    }
     # string - path to the JSON file
     __file_path = "file.json"
     # dictionary - empty but will store all objects by <class name>.id
@@ -91,8 +106,8 @@ class FileStorage:
 
         if not cls:
             count = 0
-            for clss in all_clss:
-                count += len(models.storage.all(clss).values())
+            for cls in all_clss:
+                count += len(models.storage.all(cls).values())
         else:
             count = len(models.storage.all(cls).values())
 
