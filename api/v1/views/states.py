@@ -7,53 +7,76 @@ from models import storage, CNC
 from models.state import State
 
 
-@app_views.route('/states', methods=['GET', 'POST'])
-@swag_from('swagger_yaml/states_no_id.yml', methods=['GET', 'POST'])
-def states_no_id():
+@app_views.route('/states', strict_slashes=False)
+def get_all_states():
     """
         states route to handle http method for requested states no id provided
     """
     if request.method == 'GET':
-        all_states = storage.all(State)
-        list_states = []
-        for state in all_states.values():
-            list_states.append(state.to_dict())
+        all_states = storage.all(State).values()
+        list_states = [state.to_dict() for state in all_states]
+
         return jsonify(list_states)
 
-    if request.method == 'POST':
-        req_json = request.get_json()
-        if req_json is None:
-            abort(400, 'Not a JSON')
-        if req_json.get("name") is None:
-            abort(400, 'Missing name')
-        State = CNC.get("State")
-        new_object = State(**req_json)
-        new_object.save()
-        return jsonify(new_object.to_json()), 201
+@app_views.route('/states/<state_id>', strict_slashes=False)
+def get_state(state_id):
+    
+    state = storage.get(State, state_id)
+    if state:
+        return jsonify(state.to_dict())
+    else:
+        return abort(404)
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'DELETE', 'PUT'])
-@swag_from('swagger_yaml/states_id.yml', methods=['PUT', 'GET', 'DELETE'])
-def states_with_id(state_id=None):
+@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+def del_states(state_id):
     """
-        states route to handle http method for requested state by id
+        states route to delete state
     """
     state_obj = storage.get('State', 'state_id')
-    if state_obj is None:
-        abort(404, 'Not found')
-        return jsonify(state_obj.to_dict()), 'OK'
+    if state:
+        storage.delete(state)
+        storage.save()
+        return jsonify({}), 200
+    else:
+        abort(404)
 
-    if request.method == 'GET':
-        return jsonify(state_obj.to_json())
+@app_views.route('/states', methods=['POST'], strict_slashes=False)
+def create_state():
+    """ 
+        states route to create a new state
+    """
 
-    if request.method == 'DELETE':
-        state_obj.delete()
-        del state_obj
-        return jsonify({})
+    if request.content_type != 'application/json':
+        return abort(404, 'Not a JSON')
 
-    if request.method == 'PUT':
-        req_json = request.get_json()
-        if req_json is None:
-            abort(400, 'Not a JSON')
-        state_obj.bm_update(req_json)
-        return jsonify(state_obj.to_json())
+    if not request.get_json():
+        return jsonify(404, 'Not a JSON')
+    kwargs = request.get_json()
+
+    if name not in kwargs:
+        return abort(404, 'Missing name')
+
+@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
+def update_state():                     
+    """                                 
+        states route to create a new state
+    """                                 
+                                        
+    if request.content_type != 'application/json':
+        return abort(404, 'Not a JSON')
+
+    state = storage.get(State, state_id)
+    if state:
+        if not request.get_json():
+            return abort(404, 'Not a JSON')
+        data = request.get_json()
+        ignore_keys = ['id', 'created_at', 'updated_at']
+
+        for key, value in data.items:
+            if key not in ignore_keys:
+                setattr(state, key, value)
+        state.save()
+        return jsonify(state.to_dict()), 200
+    else:
+        return abort(404)
