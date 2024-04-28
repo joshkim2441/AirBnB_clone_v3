@@ -4,6 +4,7 @@ from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger import Swagger, swag_from
 from models import storage, CNC
+from models.state import State
 
 
 @app_views.route('/states', methods=['GET', 'POST'])
@@ -13,7 +14,7 @@ def states_no_id():
         states route to handle http method for requested states no id provided
     """
     if request.method == 'GET':
-        all_states = storage.all('State')
+        all_states = storage.all(State)
         list_states = []
         for state in all_states.values():
             list_states.append(state.to_dict())
