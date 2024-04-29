@@ -67,7 +67,6 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
-
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)

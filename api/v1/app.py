@@ -19,10 +19,12 @@ def downtear(self):
     ''' Closes the storage engine '''
     storage.close()
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     """ Return render_template """
     return make_response(jsonify({"error": "Not found"}), 404)
+
 
 if __name__ == '__main__':
     if getenv("HBNB_API_HOST") is None:

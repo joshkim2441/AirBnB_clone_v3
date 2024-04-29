@@ -29,7 +29,8 @@ def get_state(state_id):
         return jsonify(state.to_dict())
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def del_states(state_id):
     """
         states route to delete state
@@ -41,6 +42,7 @@ def del_states(state_id):
         return jsonify({}), 200
     else:
         abort(404)
+
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create_state():
@@ -61,6 +63,7 @@ def create_state():
     state = State(**kwargs)
     state.save()
     return jsonify(state.to_dict()), 200
+
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
