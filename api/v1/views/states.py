@@ -57,6 +57,10 @@ def create_state():
     if 'name' not in kwargs:
         return abort(404, 'Missing name')
 
+    state = State(**kwargs)
+    state.save()
+    return jsonify(state.to_dict()), 200
+
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
     """
