@@ -25,8 +25,8 @@ def get_state(state_id):
     state = storage.get(State, state_id)
     if not state:
         abort(404)
-    else:
-        return jsonify(state.to_dict())
+
+    return jsonify(state.to_dict())
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
@@ -35,13 +35,12 @@ def del_states(state_id):
     """
         states route to delete state
     """
-    state = storage.get('State', 'state_id')
-    if state:
-        storage.delete(state)
-        storage.save()
-        return jsonify({}), 200
-    else:
+    state = storage.get(State, state_id)
+    if not state:
         abort(404)
+    storage.delete(state)
+    storage.save()
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
@@ -49,20 +48,17 @@ def create_state():
     """
         states route to create a new state
     """
-
-    if request.content_type != 'application/json':
-        return abort(404, 'Not a JSON')
-
     if not request.get_json():
-        return jsonify(404, 'Not a JSON')
-    kwargs = request.get_json()
+        abort(404, description='Not a JSON')
 
-    if 'name' not in kwargs:
-        return abort(404, 'Missing name')
+    data = request.get_json()
 
-    state = State(**kwargs)
+    if 'name' not in data:
+        abort(404, description='Missing name')
+
+    state = State(**data)
     state.save()
-    return jsonify(state.to_dict()), 200
+    return make_response(jsonify(state.to_dict()), 200)
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)

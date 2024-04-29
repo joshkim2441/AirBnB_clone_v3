@@ -46,12 +46,11 @@ class FileStorage:
         """
         if cls is not None:
             new_objs = {}
-            for clsid, obj in FileStorage.__objects.items():
-                if type(obj).__name__ == cls:
+            for clsid, obj in self.__objects.items():
+                if cls == obj.__class__ or cls == obj.__class__.__name__:
                     new_objs[clsid] = obj
             return new_objs
-        else:
-            return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
@@ -63,7 +62,9 @@ class FileStorage:
         """serializes __objects to the JSON file (path: __file_path)"""
         json_objects = {}
         for key in self.__objects:
-            json_objects[key] = self.__objects[key].to_dict()
+            if key == "password":
+                json_objects[key].decode()
+            json_objects[key] = self.__objects[key].to_dict(save_fs=1)
         with open(self.__file_path, 'w') as f:
             json.dump(json_objects, f)
 
@@ -93,10 +94,14 @@ class FileStorage:
         Returns the object based on the class name and its
         id, or None if it's not found
         """
-        if cls and id:
-            fetch_obj = "{}.{}".format(cls, id)
-            all_obj = self.all(cls)
-            return all_obj.get(fetch_obj)
+        if cls not in classes.values():
+            return None
+
+        all_cls = models.storage.all(cls)
+        for value in all_cls.values():
+            if (value.id == id):
+                return value
+
         return None
 
     def count(self, cls=None):
