@@ -77,23 +77,19 @@ def post_city(state_id):
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
-@swag_from('documentation/city/put_city.yml', methods=['PUT'])
 def put_city(city_id):
     """
     Updates a City
     """
-    city = storage.get(City, city_id)
-    if not city:
+    all_cities = storage.all("City").values()
+    city_obj = [obj.to_dict() for obj in all_cities if obj.id == city_id]
+    if city_obj == []:
         abort(404)
-
     if not request.get_json():
-        abort(400, description="Not a JSON")
-
-    ignore = ['id', 'state_id', 'created_at', 'updated_at']
-
-    data = request.get_json()
-    for key, value in data.items():
-        if key not in ignore:
-            setattr(city, key, value)
+        abort(400, 'Not a JSON')
+    city_obj[0]['name'] = request.json['name']
+    for obj in all_cities:
+        if obj.id == city_id:
+            obj.name = request.json['name']
     storage.save()
-    return make_response(jsonify(city.to_dict()), 200)
+    return jsonify(city_obj[0]), 200

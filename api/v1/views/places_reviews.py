@@ -4,12 +4,10 @@ Flask route that returns json status response
 """
 from api.v1.views import app_views
 from flask import abort, jsonify, request
-from flasgger.utils import swag_from
 from models import storage, CNC
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'])
-@swag_from('swagger_yaml/reviews_by_place.yml', methods=['GET', 'POST'])
 def reviews_per_place(place_id=None):
     """
     reviews route to handle http method
