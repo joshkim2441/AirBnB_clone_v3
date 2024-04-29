@@ -17,15 +17,18 @@ STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 if STORAGE_TYPE == "db":
     Base = declarative_base()
 else:
-    Base = object
+    class Base:
+        pass
 
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
     if STORAGE_TYPE == "db":
-        id = Column(String(60), primary_key=True)
-        created_at = Column(DateTime, default=datetime.utcnow)
-        updated_at = Column(DateTime, default=datetime.utcnow)
+        id = Column(String(60), nullable=False, primary_key=True)
+        created_at = Column(DateTime, nullable=False,
+                             default=datetime.utcnow)
+        updated_at = Column(DateTime, nullable=False,
+                             default=datetime.utcnow)
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
@@ -38,7 +41,7 @@ class BaseModel:
     def __set_attributes(self, attr_dict):
         """Converts attr_dict values to python attributes"""
         if 'id' not in attr_dict:
-            attr_dict['id'] = str(uuid())
+            attr_dict['id'] = str(uuid.uuid4())
         if 'created_at' not in attr_dict:
             attr_dict['created_at'] = datetime.utcnow()
         elif not isinstance(attr_dict['created_at'], datetime):
@@ -57,7 +60,7 @@ class BaseModel:
             setattr(self, attr, val)
 
         def __is_serializable(self, obj_v):
-            """Checks if object is serializable """
+            """Checks if object is serializable: private """
             try:
                 obj_to_string = json.dumps(obj_v)
                 return obj_to_string is not None and isinstance(
