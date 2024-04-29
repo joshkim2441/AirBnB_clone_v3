@@ -18,14 +18,15 @@ def get_all_states():
 
         return jsonify(list_states)
 
+
 @app_views.route('/states/<state_id>', strict_slashes=False)
 def get_state(state_id):
 
     state = storage.get(State, state_id)
-    if state:
-        return jsonify(state.to_dict())
+    if not state:
+        abort(404)
     else:
-        return abort(404)
+        return jsonify(state.to_dict())
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
@@ -66,21 +67,19 @@ def update_state(state_id):
     """
         states route to create a new state
     """
-
-    if request.content_type != 'application/json':
-        return abort(404, 'Not a JSON')
-
     state = storage.get(State, state_id)
-    if state:
-        if not request.get_json():
-            return abort(404, 'Not a JSON')
-        data = request.get_json()
-        ignore_keys = ['id', 'created_at', 'updated_at']
 
-        for key, value in data.items:
-            if key not in ignore_keys:
-                setattr(state, key, value)
-        state.save()
-        return jsonify(state.to_dict()), 200
-    else:
-        return abort(404)
+    if not state:
+        abort(404)
+
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+
+    ignore = ['id', 'created_at', 'updated_at']
+
+    data = request.get_json()
+    for key, value in data.items():
+        if key not in ignore:
+            setattr(state, key, value)
+    storage.save()
+    return make_response(jsonify(state.to_dict()), 200)
