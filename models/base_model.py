@@ -60,11 +60,12 @@ class BaseModel:
             """Checks if object is serializable """
             try:
                 obj_to_string = json.dumps(obj_v)
-                return obj_to_string is not None and isinstance(obj_to_string, str)
+                return obj_to_string is not None and isinstance(
+                    obj_to_string, str)
             except Exception:
                 return False
 
-        def bm_updates(self, attr_dict=None):
+        def bm_update(self, attr_dict=None):
             """Updates basemodel, sets correct attributes"""
             IGNORE = [
                 'id', 'created_at', 'updated_at', 'email',
@@ -80,8 +81,9 @@ class BaseModel:
 
     def __str__(self):
         """String representation of the BaseModel class"""
-        return "[{:s}] ({:s}) {}".format(self.__class__.__name__, self.id,
-                                         self.__dict__)
+        class_name = type(self).__name__
+        return "[{}] ({}) {}".format(class_name, self.id,
+                                     self.__dict__)
 
     def save(self):
         """updates the attribute 'updated_at' with the current datetime"""
@@ -102,7 +104,7 @@ class BaseModel:
             })
         if not saving_file_storage and obj_class == 'User':
             bm_dict.pop('password', None)
-        return(bm_dict)
+        return (bm_dict)
 
     def delete(self):
         """delete the current instance from the storage"""
