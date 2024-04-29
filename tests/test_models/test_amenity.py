@@ -2,14 +2,14 @@
 """
 Contains the TestAmenityDocs classes
 """
-
-from datetime import datetime
-import inspect
-import models
-from models import amenity
-from models.base_model import BaseModel
 import pep8
+import models
+import inspect
 import unittest
+from models import amenity
+from datetime import datetime
+from models.base_model import BaseModel
+
 Amenity = amenity.Amenity
 
 
@@ -104,3 +104,7 @@ class TestAmenity(unittest.TestCase):
         amenity = Amenity()
         string = "[Amenity] ({}) {}".format(amenity.id, amenity.__dict__)
         self.assertEqual(string, str(amenity))
+
+
+if __name__ == '__main__':
+    unittest.main
