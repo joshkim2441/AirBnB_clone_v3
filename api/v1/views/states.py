@@ -6,10 +6,11 @@ from models import storage, CNC
 from models.state import State
 
 
-@app_views.route('/states', strict_slashes=False)
+@app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_all_states():
     """
-        states route to handle http method for requested states no id provided
+        states route to handle http method for requested
+        states no id provided
     """
     if request.method == 'GET':
         all_states = storage.all(State).values()
@@ -18,7 +19,8 @@ def get_all_states():
         return jsonify(list_states)
 
 
-@app_views.route('/states/<state_id>', strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_state(state_id):
 
     state = storage.get(State, state_id)

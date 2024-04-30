@@ -3,11 +3,11 @@
 import os
 import models
 import hashlib
-from models.base_model import BaseModel, Base
-from os import getenv
 import sqlalchemy
+from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 

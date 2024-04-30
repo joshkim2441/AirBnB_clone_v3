@@ -2,17 +2,16 @@
 """
 Flask route that returns json status response
 """
-from api.v1.views import app_views
-from flask import abort, jsonify, request
+import uuid
 from models import storage
 from models.place import Place
 from models.review import Review
-from datetime import datetime
-import uuid
+from api.v1.views import app_views
+from flask import abort, jsonify, request
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['GET'])
-@app_views.route('/places/<place_id>/reviews/', methods=['GET'])
+@app_views.route('/places/<place_id>/reviews', methods=['GET'],
+                 strict_slashes=False)
 def list_reviews_of_place(place_id):
     ''' Retrieves a list of all Review objects of a Place '''
     all_places = storage.all("Place").values()
@@ -24,7 +23,8 @@ def list_reviews_of_place(place_id):
     return jsonify(list_reviews)
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['POST'])
+@app_views.route('/places/<place_id>/reviews', methods=['POST'],
+                 strict_slashes=False)
 def create_review(place_id):
     '''Creates a Review'''
     if not request.get_json():
@@ -51,7 +51,8 @@ def create_review(place_id):
     return jsonify(reviews[0]), 201
 
 
-@app_views.route('/reviews/<review_id>', methods=['GET'])
+@app_views.route('/reviews/<review_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_review(review_id):
     '''Retrieves a Review object '''
     all_reviews = storage.all("Review").values()
@@ -61,7 +62,8 @@ def get_review(review_id):
     return jsonify(review_obj[0])
 
 
-@app_views.route('/reviews/<review_id>', methods=['DELETE'])
+@app_views.route('/reviews/<review_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_review(review_id):
     '''Deletes a Review object'''
     all_reviews = storage.all("Review").values()
@@ -76,7 +78,8 @@ def delete_review(review_id):
     return jsonify({}), 200
 
 
-@app_views.route('/reviews/<review_id>', methods=['PUT'])
+@app_views.route('/reviews/<review_id>', methods=['PUT'],
+                 strict_slashes=False)
 def updates_review(review_id):
     '''Updates a Review object'''
     all_reviews = storage.all("Review").values()
