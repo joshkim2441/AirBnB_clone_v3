@@ -77,6 +77,7 @@ def post_city(state_id):
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
+@swag_from('documentation/city/put_city.yml', methods=['PUT'])
 def put_city(city_id):
     """
     Updates a City
