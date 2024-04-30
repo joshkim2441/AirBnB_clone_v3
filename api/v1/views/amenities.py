@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""New view for Amenity objects that handles
+""" New view for Amenity objects that handles
 all default RESTFul API actions
 """
 from models import storage
