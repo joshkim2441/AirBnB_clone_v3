@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """ objects that handles all default RestFul API actions for cities """
-from models import storage
 from models.city import City
 from models.state import State
+from models import storage
 from api.v1.views import app_views
-from flasgger.utils import swag_from
 from flask import abort, jsonify, make_response, request
+from flasgger.utils import swag_from
 
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'],
@@ -82,15 +82,18 @@ def put_city(city_id):
     """
     Updates a City
     """
-    all_cities = storage.all("City").values()
-    city_obj = [obj.to_dict() for obj in all_cities if obj.id == city_id]
-    if city_obj == []:
+    city = storage.get(City, city_id)
+    if not city:
         abort(404)
+
     if not request.get_json():
-        abort(400, 'Not a JSON')
-    city_obj[0]['name'] = request.json['name']
-    for obj in all_cities:
-        if obj.id == city_id:
-            obj.name = request.json['name']
+        abort(400, description="Not a JSON")
+
+    ignore = ['id', 'state_id', 'created_at', 'updated_at']
+
+    data = request.get_json()
+    for key, value in data.items():
+        if key not in ignore:
+            setattr(city, key, value)
     storage.save()
-    return jsonify(city_obj[0]), 200
+    return make_response(jsonify(city.to_dict()), 200)
