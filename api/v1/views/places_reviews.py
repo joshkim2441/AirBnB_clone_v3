@@ -2,6 +2,9 @@
 """
 Flask route that returns json status response
 """
+from models.user import User
+from models.place import Place
+from models.review import Review
 from api.v1.views import app_views
 from flask import abort, jsonify, request
 from flasgger.utils import swag_from
