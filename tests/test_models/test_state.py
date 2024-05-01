@@ -2,14 +2,14 @@
 """
 Contains the TestStateDocs classes
 """
-import pep8
-import models
-import inspect
-import unittest
-from models import state
-from datetime import datetime
-from models.base_model import BaseModel
 
+from datetime import datetime
+import inspect
+import models
+from models import state
+from models.base_model import BaseModel
+import pep8
+import unittest
 State = state.State
 
 
@@ -103,7 +103,3 @@ class TestState(unittest.TestCase):
         state = State()
         string = "[State] ({}) {}".format(state.id, state.__dict__)
         self.assertEqual(string, str(state))
-
-
-if __name__ == '__main__':
-    unittest.main

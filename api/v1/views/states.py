@@ -2,15 +2,15 @@
 """ A new view for State object """
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
+from flasgger import Swagger, swag_from
 from models import storage, CNC
 from models.state import State
 
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
+@app_views.route('/states', strict_slashes=False)
 def get_all_states():
     """
-        states route to handle http method for requested
-        states no id provided
+        states route to handle http method for requested states no id provided
     """
     if request.method == 'GET':
         all_states = storage.all(State).values()
@@ -19,8 +19,7 @@ def get_all_states():
         return jsonify(list_states)
 
 
-@app_views.route('/states/<state_id>', methods=['GET'],
-                 strict_slashes=False)
+@app_views.route('/states/<state_id>', strict_slashes=False)
 def get_state(state_id):
 
     state = storage.get(State, state_id)
@@ -67,15 +66,19 @@ def update_state(state_id):
     """
         states route to create a new state
     """
-    all_states = storage.all("State").values()
-    state_obj = [obj.to_dict() for obj in all_states if obj.id == state_id]
-    if state_obj == []:
+    state = storage.get(State, state_id)
+
+    if not state:
         abort(404)
+
     if not request.get_json():
-        abort(400, 'Not a JSON')
-    state_obj[0]['name'] = request.json['name']
-    for obj in all_states:
-        if obj.id == state_id:
-            obj.name = request.json['name']
+        abort(400, description="Not a JSON")
+
+    ignore = ['id', 'created_at', 'updated_at']
+
+    data = request.get_json()
+    for key, value in data.items():
+        if key not in ignore:
+            setattr(state, key, value)
     storage.save()
-    return jsonify(state_obj[0]), 200
+    return make_response(jsonify(state.to_dict()), 200)

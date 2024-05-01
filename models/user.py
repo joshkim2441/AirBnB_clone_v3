@@ -3,11 +3,11 @@
 import os
 import models
 import hashlib
-import sqlalchemy
+from models.base_model import BaseModel, Base
 from os import getenv
+import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 
@@ -34,3 +34,10 @@ class User(BaseModel, Base):
             if pwd:
                 User.__set_password(self, pwd)
         super().__init__(*args, **kwargs)
+
+    def __set_password(self, pwd):
+        """ Custom setter to encrypt password using MD5"""
+        secure = hashlib.md5()
+        secure.update(pwd.encode("utf-8"))
+        secure_password = secure.hexdigest()
+        setattr(self, "password", secure_password)

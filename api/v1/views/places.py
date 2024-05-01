@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul API actions for Places """
-from models import storage
-from models.user import User
-from models.city import City
 from models.state import State
+from models.city import City
 from models.place import Place
+from models.user import User
 from models.amenity import Amenity
+from models import storage
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 
