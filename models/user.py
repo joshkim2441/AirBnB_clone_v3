@@ -2,12 +2,12 @@
 """ holds class User"""
 import os
 import models
-import hashlib
-from models.base_model import BaseModel, Base
-from os import getenv
 import sqlalchemy
+from hashlib import md5
+from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 
@@ -33,6 +33,6 @@ class User(BaseModel, Base):
 
     def __setattr__(self, name, value):
         """sets a password with md5 encryption"""
-    if name == "password":
+        if name == "password":
             value = md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
