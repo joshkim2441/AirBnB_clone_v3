@@ -107,6 +107,21 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
+    def to_json(self, saving_file_storage=False):
+        """returns a json representation of self"""
+        obj_class = self.__class__.__name__
+        bm_dict = {
+            k: v if self.__is_serializable(v) else str(v)
+            for k, v in self.__dict__.items()
+        }
+        bm_dict.pop('_sa_instance_state', None)
+        bm_dict.update({
+            '__class__': obj_class
+            })
+        if not saving_file_storage and obj_class == 'User':
+            bm_dict.pop('password', None)
+        return (bm_dict)
+
     def to_dict(self, save_fs=None):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
