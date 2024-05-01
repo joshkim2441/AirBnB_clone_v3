@@ -49,12 +49,12 @@ def create_state():
         states route to create a new state
     """
     if not request.get_json():
-        abort(404, description='Not a JSON')
+        abort(400, description='Not a JSON')
 
     data = request.get_json()
 
     if 'name' not in data:
-        abort(404, description='Missing name')
+        abort(400, description='Missing name')
 
     state = State(**data)
     state.save()
