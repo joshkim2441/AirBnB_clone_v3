@@ -11,7 +11,7 @@ from models.review import Review
 from models.amenity import Amenity
 
 
-@app_views.route('/status', methods=['GET'])
+@app_views.route('/status', methods=['GET'], strict_slashes=False)
 def api_status():
     """ Status of the API """
     response = {'status': 'OK'}
