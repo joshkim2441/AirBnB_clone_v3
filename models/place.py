@@ -5,6 +5,7 @@ import models
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
+from models.amenity import Amenity
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
@@ -71,7 +72,7 @@ class Place(BaseModel, Base):
         @property
         def amenities(self):
             """getter attribute returns the list of Amenity instances"""
-            from models.amenity import Amenity
+
             amenity_list = []
             all_amenities = models.storage.all(Amenity)
             for amenity in all_amenities.values():
