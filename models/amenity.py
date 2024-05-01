@@ -2,12 +2,11 @@
 """ holds class Amenity"""
 import os
 import models
-import sqlalchemy
-from os import getenv
-from sqlalchemy import Column, String
-from models.place import place_amenity
-from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
+from os import getenv
+import sqlalchemy
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 
@@ -16,8 +15,6 @@ class Amenity(BaseModel, Base):
     if STORAGE_TYPE == 'db':
         __tablename__ = 'amenities'
         name = Column(String(128), nullable=False)
-        place_amenities = relationship("Place", secondary=place_amenity,
-                                       back_populates="amenities")
     else:
         name = ""
 

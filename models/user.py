@@ -2,12 +2,12 @@
 """ holds class User"""
 import os
 import models
-import sqlalchemy
-from hashlib import md5
+import hashlib
+from models.base_model import BaseModel, Base
 from os import getenv
+import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 
@@ -28,20 +28,12 @@ class User(BaseModel, Base):
         last_name = ""
 
     def __init__(self, *args, **kwargs):
-        """
-            instantiates user object
-        """
-        if kwargs:
-            pwd = kwargs.pop('password', None)
-            if pwd:
-                User.__set_password(self, pwd)
+        """initializes user"""
         super().__init__(*args, **kwargs)
 
     def __set_password(self, pwd):
-        """
-            custom setter: encrypts password to MD5
-        """
-        secure = md5()
+        """ Custom setter to encrypt password using MD5"""
+        secure = hashlib.md5()
         secure.update(pwd.encode("utf-8"))
         secure_password = secure.hexdigest()
         setattr(self, "password", secure_password)
